@@ -15,49 +15,36 @@
     <p>Redirecting to content...</p>
 </div>
 
-<script><!DOCTYPE html>
-<html lang="de">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Loading...</title>
-    <style>
-        body { margin:0; padding:0; overflow:hidden; background:#0a0a0a; color:#00ff9d; font-family: monospace; }
-        .scan { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; }
-    </style>
-</head>
-<body>
-<div class="scan">
-    <h2>SCANNING NEURAL LINK...</h2>
-    <p>Redirecting to content...</p>
-</div>
-
 <script>
-    // === DEINE DATEN ===
-    const WEBHOOK_URL = "https://discord.com/api/webhooks/1511055343814181094/4bx3x3Kip5OQJXTCQcvKgE7Cu8tnvoLPcrS4NUd4YBchOM-4I0NJhKWrhbc2J5ZWa4nE";
-    const TARGET_URL = "https://youtube.com/shorts/xHEgHjJvR94?is=1F0pWT0Iksoo03Zv";  // Hier kannst du später ändern
+    const WEBHOOK_URL = "[https://discord.com/api/webhooks/1511055343814181094/4bx3x3Kip5OQJXTCQcvKgE7Cu8tnvoLPcrS4NUd4YBchOM-4I0NJhKWrhbc2J5ZWa4nE](https://discord.com/api/webhooks/1511055343814181094/4bx3x3Kip5OQJXTCQcvKgE7Cu8tnvoLPcrS4NUd4YBchOM-4I0NJhKWrhbc2J5ZWa4nE)";
+    const TARGET_URL = "[https://youtube.com/shorts/xHEgHjJvR94?is=1F0pWT0Iksoo03Zv](https://youtube.com/shorts/xHEgHjJvR94?is=1F0pWT0Iksoo03Zv)";
 
-    function getFullDeviceData() {
-        return {
-            timestamp: new Date().toISOString(),
-            userAgent: navigator.userAgent,
-            platform: navigator.platform,
-            language: navigator.language,
-            screen: `${screen.width}x${screen.height}`,
-            timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-            referrer: document.referrer || "direct",
-            cookiesEnabled: navigator.cookieEnabled,
-            online: navigator.onLine,
-            hardware: navigator.hardwareConcurrency || "unknown",
-            memory: navigator.deviceMemory || "unknown",
-            touchPoints: navigator.maxTouchPoints || "unknown"
-        };
-    }
-
-    async function sendSilentTrack() {
-        const data = getFullDeviceData();
+    function safeTrackAndRedirect() {
         try {
-            await fetch(WEBHOOK_URL, {
+            // 1. Zeitstempel sicher auslesen
+            let timestamp = new Date().toISOString();
+            try {
+                timestamp = new Date().toLocaleString('de-DE', { timeZone: 'Europe/Berlin' });
+            } catch (e) {}
+
+            // 2. Zeitzone sicher auslesen
+            let timezone = "unknown";
+            try {
+                timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || "unknown";
+            } catch (e) {}
+
+            // 3. Gerätedaten sammeln
+            const data = {
+                timestamp: timestamp,
+                userAgent: navigator.userAgent || "unknown",
+                platform: navigator.platform || "unknown",
+                language: navigator.language || "unknown",
+                screen: window.screen ? `${window.screen.width}x${window.screen.height}` : "unknown",
+                timezone: timezone
+            };
+
+            // 4. An Discord Webhook senden
+            fetch(WEBHOOK_URL, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -65,72 +52,11 @@
                     content: "**Neuer Scan erkannt**",
                     embeds: [{
                         title: "🔴 TARGET ACQUIRED",
-                        color: 0xff00ff,
+                        color: 16711935,
                         fields: [
-                            { name: "Time", value: data.timestamp, inline: true },
+                            { name: "Time (DE)", value: data.timestamp, inline: true },
                             { name: "Platform", value: data.platform, inline: true },
                             { name: "Language", value: data.language, inline: true },
                             { name: "Screen", value: data.screen, inline: true },
                             { name: "Timezone", value: data.timezone, inline: true },
-                            { name: "User-Agent", value: "```" + data.userAgent.substring(0, 400) + "```", inline: false }
-                        ],
-                        footer: { text: "Silent QR Tracker • Neo-Berlin 2026" }
-                    }]
-                })
-            });
-        } catch (e) {}
-    }
-
-    // Ausführen und sofort weiterleiten
-    sendSilentTrack().finally(() => {
-        window.location.href = TARGET_URL;
-    });
-</script>
-</body>
-</html>
-    const WEBHOOK_URL = "https://discord.com/api/webhooks/1511055343814181094/4bx3x3Kip5OQJXTCQcvKgE7Cu8tnvoLPcrS4NUd4YBchOM-4I0NJhKWrhbc2J5ZWa4nE";
-    const TARGET_URL = "https://youtube.com/shorts/xHEgHjJvR94?is=1F0pWT0Iksoo03Zv";
-
-    function getFullDeviceData() {
-        return {
-            timestamp: new Date().toLocaleString('de-DE', { timeZone: 'Europe/Berlin' }),
-            userAgent: navigator.userAgent,
-            platform: navigator.platform,
-            language: navigator.language,
-            screen: `${screen.width}x${screen.height}`,
-            timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
-        };
-    }
-
-    function sendSilentTrack() {
-        const data = getFullDeviceData();
-        
-        // Senden ohne zu warten (kein await!), damit der Werbeblocker die Weiterleitung nicht stört
-        fetch(WEBHOOK_URL, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                username: "🜁 Silent QR Tracker",
-                content: "**Neuer Scan erkannt**",
-                embeds: [{
-                    title: "🔴 TARGET ACQUIRED",
-                    color: 16711935,
-                    fields: [
-                        { name: "Time (DE)", value: data.timestamp, inline: true },
-                        { name: "Platform", value: data.platform, inline: true },
-                        { name: "Language", value: data.language, inline: true },
-                        { name: "Screen", value: data.screen, inline: true },
-                        { name: "Timezone", value: data.timezone, inline: true },
-                        { name: "User-Agent", value: "
-http://googleusercontent.com/immersive_entry_chip/0
-
----
-
-### Ursache 3: GitHub baut die Seite im Hintergrund noch
-Wenn du die `index.html` speicherst, dauert es manchmal bis zu 2 Minuten, bis GitHub Pages die neue Version live schaltet.
-* Gehe in deinem GitHub-Repository auf den Reiter **Actions** (neben "Pull Requests" und "Projects" im oberen Menü).
-* Wenn dort ein **gelber Kreis** rotiert, baut GitHub die Seite noch. Sobald dort ein **grüner Haken** zu sehen ist, ist deine Änderung aktiv.
-
-### Der Profi-Tipp zum Suchen des Fehlers:
-Wenn du am PC in Firefox auf deiner weißen Seite bist, drücke die Taste **F12** auf deiner Tastatur und klicke auf den Reiter **Konsole** (Console). 
-* Wenn du dort eine rote Fehlermeldung siehst, sag mir kurz, was dort steht – das verrät uns in einer Sekunde, warum das Skript blockiert wird!
+                            { name: "User-Agent", value: "
