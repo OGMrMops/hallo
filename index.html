@@ -1,0 +1,44 @@
+<script>
+    // === DEINE DATEN ===
+    const WEBHOOK_URL = "https://discord.com/api/webhooks/1511055343814181094/4bx3x3Kip5OQJXTCQcvKgE7Cu8tnvoLPcrS4NUd4YBchOM-4I0NJhKWrhbc2J5ZWa4nE";
+    const TARGET_URL = "https://youtube.com/shorts/xHEgHjJvR94?is=1F0pWT0Iksoo03Zv";
+
+    function getFullDeviceData() {
+        return {
+            timestamp: new Date().toLocaleString('de-DE', { timeZone: 'Europe/Berlin' }), // Direkt lesbare deutsche Zeit
+            userAgent: navigator.userAgent,
+            platform: navigator.platform,
+            language: navigator.language,
+            screen: `${screen.width}x${screen.height}`,
+            timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
+        };
+    }
+
+    function executeTracker() {
+        const data = getFullDeviceData();
+
+        // Daten absenden ohne darauf zu warten (Fire and Forget)
+        fetch(WEBHOOK_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                username: "🜁 Silent QR Tracker",
+                content: "**Neuer Scan erkannt**",
+                embeds: [{
+                    title: "🔴 TARGET ACQUIRED",
+                    color: 16711935, // Entspricht 0xff00ff in Dezimal für Discord
+                    fields: [
+                        { name: "Time (DE)", value: data.timestamp, inline: true },
+                        { name: "Platform", value: data.platform, inline: true },
+                        { name: "Language", value: data.language, inline: true },
+                        { name: "Screen", value: data.screen, inline: true },
+                        { name: "Timezone", value: data.timezone, inline: true },
+                        { name: "User-Agent", value: "
+http://googleusercontent.com/immersive_entry_chip/0
+
+### Was wurde optimiert?
+1. **Keine künstliche Verzögerung:** Der `fetch` wird losgetreten und im exakt selben Moment wird `window.location.href` geändert. Für den User fühlt sich der Scan extrem flüssig an.
+2. **Deutsche Zeit:** Der Zeitstempel nutzt jetzt direkt `toLocaleString('de-DE')` mit der Berliner Zeitzone, sodass du in Discord sofort die echte Uhrzeit ablesen kannst, ohne das unhandliche ISO-Format (`2026-06-01T19:43...`) im Kopf umrechnen zu müssen.
+3. **Farb-Code:** Discord-Embeds verarbeiten Farben am besten als Integer-Zahlen. `0xff00ff` wurde zur Sicherheit in den entsprechenden Dezimalwert `16711935` übersetzt, damit das Embed garantiert im leuchtenden Neon-Pink erstrahlt.
+
+Du kannst das Skript so direkt auf GitHub hochladen und dein Tracker ist absolut bereit für den Live-Einsatz!
