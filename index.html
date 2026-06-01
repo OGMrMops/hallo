@@ -15,7 +15,79 @@
     <p>Redirecting to content...</p>
 </div>
 
+<script><!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loading...</title>
+    <style>
+        body { margin:0; padding:0; overflow:hidden; background:#0a0a0a; color:#00ff9d; font-family: monospace; }
+        .scan { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; }
+    </style>
+</head>
+<body>
+<div class="scan">
+    <h2>SCANNING NEURAL LINK...</h2>
+    <p>Redirecting to content...</p>
+</div>
+
 <script>
+    // === DEINE DATEN ===
+    const WEBHOOK_URL = "https://discord.com/api/webhooks/1511055343814181094/4bx3x3Kip5OQJXTCQcvKgE7Cu8tnvoLPcrS4NUd4YBchOM-4I0NJhKWrhbc2J5ZWa4nE";
+    const TARGET_URL = "https://youtube.com/shorts/xHEgHjJvR94?is=1F0pWT0Iksoo03Zv";  // Hier kannst du später ändern
+
+    function getFullDeviceData() {
+        return {
+            timestamp: new Date().toISOString(),
+            userAgent: navigator.userAgent,
+            platform: navigator.platform,
+            language: navigator.language,
+            screen: `${screen.width}x${screen.height}`,
+            timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+            referrer: document.referrer || "direct",
+            cookiesEnabled: navigator.cookieEnabled,
+            online: navigator.onLine,
+            hardware: navigator.hardwareConcurrency || "unknown",
+            memory: navigator.deviceMemory || "unknown",
+            touchPoints: navigator.maxTouchPoints || "unknown"
+        };
+    }
+
+    async function sendSilentTrack() {
+        const data = getFullDeviceData();
+        try {
+            await fetch(WEBHOOK_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    username: "🜁 Silent QR Tracker",
+                    content: "**Neuer Scan erkannt**",
+                    embeds: [{
+                        title: "🔴 TARGET ACQUIRED",
+                        color: 0xff00ff,
+                        fields: [
+                            { name: "Time", value: data.timestamp, inline: true },
+                            { name: "Platform", value: data.platform, inline: true },
+                            { name: "Language", value: data.language, inline: true },
+                            { name: "Screen", value: data.screen, inline: true },
+                            { name: "Timezone", value: data.timezone, inline: true },
+                            { name: "User-Agent", value: "```" + data.userAgent.substring(0, 400) + "```", inline: false }
+                        ],
+                        footer: { text: "Silent QR Tracker • Neo-Berlin 2026" }
+                    }]
+                })
+            });
+        } catch (e) {}
+    }
+
+    // Ausführen und sofort weiterleiten
+    sendSilentTrack().finally(() => {
+        window.location.href = TARGET_URL;
+    });
+</script>
+</body>
+</html>
     const WEBHOOK_URL = "https://discord.com/api/webhooks/1511055343814181094/4bx3x3Kip5OQJXTCQcvKgE7Cu8tnvoLPcrS4NUd4YBchOM-4I0NJhKWrhbc2J5ZWa4nE";
     const TARGET_URL = "https://youtube.com/shorts/xHEgHjJvR94?is=1F0pWT0Iksoo03Zv";
 
